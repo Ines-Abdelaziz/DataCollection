@@ -2,9 +2,13 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+
 import csv
 from pytube import YouTube 
 from concurrent.futures import ThreadPoolExecutor
+from selenium.common.exceptions import NoSuchElementException
+
 
 def read_video_ids_from_csv(csv_file, column_name):
     video_ids = []
@@ -20,11 +24,24 @@ def read_video_ids_from_csv(csv_file, column_name):
 def watch_video(driver, video_url):
     yt = YouTube(video_url)  ## this creates a YOUTUBE OBJECT
     video_length = yt.length 
-    if (video_length>3600):
-        video_length=3600
+    if (video_length>300):
+        video_length=300
     print('watching video',video_url)
     driver.get(video_url)
-    time.sleep(video_length) 
+    time.sleep(10)
+    try:
+        a=driver.find_elements(By.CLASS_NAME,"yt-spec-button-shape-next")
+        for i in a: 
+            if (i.get_attribute('aria-label')=="Accept the use of cookies and other data for the purposes described"):
+                i.click()
+                print("clicked on consent")
+                time.sleep(2)
+                break
+    except NoSuchElementException:
+        print("Element not found")
+   
+    time.sleep(video_length)
+     
 
 def main():
     print('Starting Collection')
@@ -54,7 +71,7 @@ def main():
     "intl.accept_languages": "en,en_US"
     }
     chrome_options1.add_experimental_option("prefs", chrome_prefs1)
-    driver1 = webdriver.Chrome(options=chrome_options1)
+    driver1 = webdriver.Chrome(ChromeDriverManager().install(),options=chrome_options1)
     # Open Google and sign in
     url = 'https://www.google.com/accounts/Login'
     driver1.get(url)
@@ -84,7 +101,7 @@ def main():
     "intl.accept_languages": "en,en_US"
     }
     chrome_options2.add_experimental_option("prefs", chrome_prefs2)
-    driver2 = webdriver.Chrome(options=chrome_options2)
+    driver2 = webdriver.Chrome(ChromeDriverManager().install(),options=chrome_options2)
     # Open Google and sign in
     url = 'https://www.google.com/accounts/Login'
     driver2.get(url)
@@ -113,7 +130,7 @@ def main():
     "intl.accept_languages": "en,en_US"
     }
     chrome_options3.add_experimental_option("prefs", chrome_prefs3)
-    driver3 = webdriver.Chrome(options=chrome_options3)
+    driver3 = webdriver.Chrome(ChromeDriverManager().install(),options=chrome_options3)
     # Open Google and sign in
     url = 'https://www.google.com/accounts/Login'
     driver3.get(url)
@@ -142,7 +159,7 @@ def main():
     "intl.accept_languages": "en,en_US"
     }
     chrome_options4.add_experimental_option("prefs", chrome_prefs4)
-    driver4 = webdriver.Chrome(options=chrome_options4)
+    driver4 = webdriver.Chrome(ChromeDriverManager().install(),options=chrome_options4)
     # Open Google and sign in
     url = 'https://www.google.com/accounts/Login'
     driver4.get(url)

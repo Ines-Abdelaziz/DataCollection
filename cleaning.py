@@ -1,5 +1,7 @@
 import pandas as pd
 from youtubesearchpython import VideosSearch
+from pytube import YouTube 
+
 
 # Load the CSV file
 file_path = './Conspiracy_Videos.csv'
@@ -8,10 +10,11 @@ videos_df = pd.read_csv(file_path)
 # Function to check if a video exists
 def check_video_exists(video_id):
     try:
-        video_search = VideosSearch(video_id, limit=1)
-        results = video_search.result()
-        # Check if any results were returned
-        return len(results['result']) > 0
+        video_url='https://www.youtube.com/watch?v='+video_id
+        
+        video_search = YouTube(video_url)
+        
+        return (video_search.length > 0)
     except Exception as e:
         print(f"Error checking video ID {video_id}: {e}")
         return False
